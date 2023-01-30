@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1000999877100",
+    "project_id": "fsensing-d112d",
+    "storage_bucket": "fsensing-d112d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000999877100:android:aa376084d8d63b9005a8c9",
+        "android_client_info": {
+          "package_name": "com.mi.yig.fsensing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000999877100-4neodmrj6vr0toqe82rv46joc6pcikil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMGRFEWeIAGBnXliwZp_I6J2XUT6yknIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000999877100-4neodmrj6vr0toqe82rv46joc6pcikil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
