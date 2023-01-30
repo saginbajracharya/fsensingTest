@@ -634,4 +634,126 @@ class FirestoreServices {
     })
     .catchError((e) {});
   }
+
+  //Transaction Test
+  //Write updateWorkerStatusLatest
+  static updateWorkerStatusLatestTransaction(
+    String devNo, //1
+    int companyId, //2
+    int groupId, //3
+    int leftBatteryValue, //4
+    String leftDeviceId, //5
+    String leftFailureValue, //6
+    String pressureValue, //7
+    int rightBatteryValue, //8
+    String rightDeviceId, //9
+    String rightFailureValue, //10
+    String useLeftStatus, //11
+    String useRightStatus, //12
+    String temperatureValue, //13
+    String workerCode, //14
+    int workerId,//15
+    String workerName, //16
+    String workerProfileImageUrl,//17
+    String workerStatus,//18
+    int siteId,//19
+    int startTime,//20
+    String masterPressureValue,//21
+    dynamic baseMasterPressureValue,//22
+    dynamic baseUserPressureValue,//23
+    dynamic actualHeightM,//24
+    dynamic displayHeightM,//25
+    dynamic heightAlertClass,//26
+    bool alertFlg,//27
+  ){
+    final docRef = firestore.collection(dbCollectionHistory).doc(workerCode);
+    firestore.runTransaction((transaction) async {
+      Map<String, dynamic> data = <String, dynamic>{};
+      if(devNo=='1'){
+        data = <String, dynamic>{
+          "company_id": companyId,
+          // "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+          // "deleted_at": DateTime.now(),
+          "group_id": groupId,
+          "left_battery_value": leftBatteryValue,
+          "left_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "left_device_id": leftDeviceId,
+          "left_failure_value": leftFailureValue,
+          "left_useleft_status": useLeftStatus,
+          "pressure_value": pressureValue,
+          // "right_battery_value": rightBatteryValue,
+          // "right_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "right_device_id": rightDeviceId,
+          // "right_failure_value": rightFailureValue,
+          // "right_useright_status": useRightStatus.toString(),
+          "site_id": siteId,
+          "temperature_value": temperatureValue,
+          "updated_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "worker_code": workerCode,
+          "worker_id": workerId,
+          "worker_name": workerName,
+          "worker_profile_image_url": workerProfileImageUrl,
+          "worker_status": workerStatus,
+          "start_time" : startTime,
+          // "start_height_calculation":startHeightCalculation,
+          "master_pressure_value":masterPressureValue,
+          // "base_user_pressure_value":baseUserPressureValue,
+          // "base_master_pressure_value":baseMasterPressureValue,
+          "actual_height_m":actualHeightM,
+          "display_height_m":displayHeightM,
+          "height_alert_class":heightAlertClass,
+          "alert_flg":alertFlg,
+        };
+      }
+      else if(devNo=='2'){
+        data = <String, dynamic>{
+          "company_id": companyId,
+          // "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+          // "deleted_at": DateTime.now(),
+          "group_id": groupId,
+          // "left_battery_value": leftBatteryValue,
+          // "left_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "left_device_id": leftDeviceId,
+          // "left_failure_value": leftFailureValue,
+          // "left_useleft_status": useLeftStatus,
+          "pressure_value": pressureValue,
+          "right_battery_value": rightBatteryValue,
+          "right_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "right_device_id": rightDeviceId,
+          "right_failure_value": rightFailureValue,
+          "right_useright_status": useRightStatus.toString(),
+          "site_id": siteId,
+          "temperature_value": temperatureValue,
+          "updated_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "worker_code": workerCode,
+          "worker_id": workerId,
+          "worker_name": workerName,
+          "worker_profile_image_url": workerProfileImageUrl,
+          "worker_status": workerStatus,
+          "start_time" : startTime,
+
+          // "start_height_calculation":startHeightCalculation,
+          "master_pressure_value":masterPressureValue,
+          // "base_user_pressure_value":baseUserPressureValue,
+          // "base_master_pressure_value":baseMasterPressureValue,
+          "actual_height_m":actualHeightM,
+          "display_height_m":displayHeightM,
+          "height_alert_class":heightAlertClass,
+          "alert_flg":alertFlg,
+        };
+      }
+      transaction.update(docRef,data);
+    }).then(
+      (value) {
+        if (kDebugMode) {
+          print("DocumentSnapshot successfully updated!");
+        }
+      },
+      onError: (e) {
+        if (kDebugMode) {
+          print("Error updating document $e");
+        }
+      }
+    );
+  }
 }

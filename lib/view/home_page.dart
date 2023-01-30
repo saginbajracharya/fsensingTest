@@ -153,20 +153,23 @@ class _HomePageState extends State<HomePage> {
             },
             child: RichText(
               text: const TextSpan(
-                  text: 'F',
-                  style: TextStyle(
-                      color: black,
+                text: 'F',
+                style: TextStyle(
+                  color: black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: ' Sensing',
+                    style: TextStyle(
+                      color: primaryColor,
                       fontSize: 24,
-                      fontWeight: FontWeight.bold),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: ' Sensing',
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    )
-                  ]),
+                      fontWeight: FontWeight.bold
+                    ),
+                  )
+                ]
+              ),
             ),
           ),
         ),

@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:blue/common/style.dart';
 import 'package:blue/controllers/connectivity_controller.dart';
 import 'package:blue/view/home_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,9 @@ void main() async{
   // You need to use this line, if your main function uses async keyword because you use await statement inside it.
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // To disable offline caching in Firebase for a Flutter app, you can set the persistenceEnabled property to false.
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  firestore.settings = const Settings(persistenceEnabled: false);
   SystemChrome.setPreferredOrientations(
     [
       DeviceOrientation.portraitUp, 

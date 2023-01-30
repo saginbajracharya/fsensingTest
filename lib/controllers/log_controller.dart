@@ -724,6 +724,72 @@ class LogController extends GetxController{
           ),
           alertFlg: alertFlg
         );
+        // FirestoreServices.updateWorkerStatusLatestTransaction( 
+        //   devNo, //devNo 1
+        //   companyId, //companyId 2
+        //   groupId, //groupId 3
+        //   batteryValueDeviceLeft=="null"?0:int.parse(batteryValueDeviceLeft), //leftBatteryValue 4
+        //   row['dev_id1'], //leftDeviceId 5
+        //   '', //leftFailureValue 6
+        //   homeCon.deviceLeftConnected=="Connected" // pressureValue 7
+        //   ?row['dev1_Pressure']
+        //   :row['dev2_Pressure'], 
+        //   batteryValueDeviceRight=="null"?0:int.parse(batteryValueDeviceRight), //rightBatteryValue 8
+        //   row['dev_id2'], //rightDeviceId 9
+        //   '', //rightFailureValue 10
+        //   row['use_status1']=="null"?'1':row['use_status1'], //useLeftStatus 11
+        //   row['use_status2']=="null"?'1':row['use_status2'], //useRightStatus 12
+        //   homeCon.deviceLeftConnected=="Connected"?row['dev1_Temperature']:row['dev2_Temperature'], //temperatureValue 13
+        //   userId, //workerCode 14
+        //   workerId, //workerId 15
+        //   workerName, //workerName 16
+        //   workerProfileImageUrl, //workerProfileImageUrl 17
+        //   status(row['use_status1']=="null"?useStatusDetectDev1:row['use_status1'],row['use_status2']=="null"?useStatusDetectDev2:row['use_status2']), //workerStatus 18
+        //   siteId, //19
+        //   startTime, //startTime 20
+        //   isLeader==1?row['dev1_Pressure']:homeCon.currentMasterAverageValue.value, //masterPressureValue 21
+        //   null, //BM baseMasterPressureValue 22
+        //   null, //BU baseUserPressureValue 23
+        //   actualheightCalculation(
+        //     homeCon.deviceLeftConnected=="Connected"
+        //     ?row['dev1_Pressure']
+        //     :row['dev2_Pressure'], 
+        //     isLeader==1
+        //     ?homeCon.deviceLeftConnected=="Connected"
+        //     ?row['dev1_Pressure']
+        //     :row['dev2_Pressure']
+        //     :homeCon.currentMasterAverageValue.value,
+        //     homeCon.baseUserValue, 
+        //     homeCon.baseMasterValue
+        //   ), //actualHeightM 24
+        //   displayheightCalculation(
+        //     homeCon.deviceLeftConnected=="Connected"
+        //     ?row['dev1_Pressure']
+        //     :row['dev2_Pressure'], 
+        //     isLeader==1
+        //     ?homeCon.deviceLeftConnected=="Connected"
+        //     ?row['dev1_Pressure']
+        //     :row['dev2_Pressure']
+        //     :homeCon.currentMasterAverageValue.value,
+        //     homeCon.baseUserValue, 
+        //     homeCon.baseMasterValue
+        //   ), //displayHeightM 25
+        //   heightAlertCalculation(
+        //     displayheightCalculation(
+        //       homeCon.deviceLeftConnected=="Connected"
+        //       ?row['dev1_Pressure']
+        //       :row['dev2_Pressure'], 
+        //       isLeader==1
+        //       ?homeCon.deviceLeftConnected=="Connected"
+        //       ?row['dev1_Pressure']
+        //       :row['dev2_Pressure']
+        //       :homeCon.currentMasterAverageValue.value,
+        //       homeCon.baseUserValue, 
+        //       homeCon.baseMasterValue 
+        //     ),
+        //   ), //heightAlertClass 26
+        //   alertFlg, //alertFlg 27
+        // );
       }
       else{
         //ADD Latest
