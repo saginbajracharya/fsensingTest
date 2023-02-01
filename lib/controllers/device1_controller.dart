@@ -9,12 +9,10 @@ import 'package:blue/model/connected_item.dart';
 import 'package:blue/model/log_item.dart';
 import 'package:blue/model/service_list_item.dart';
 import 'package:blue/services/firestore_services.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_elves/flutter_blue_elves.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 
@@ -318,11 +316,11 @@ class Device1Controller extends GetxController {
     //uuid from device == settings device 1 real value uuid then dont parse
     Future.delayed(Duration(seconds: i==0?2:0), () {
       if(uuid==dev1RealValueUUID){
-        logCon.insertLogLoaclAndApi('1',devName,data,uuid,dev1mainUUID);
+        logCon.insertLogFBDev1(devName,data,uuid,dev1mainUUID);
       }
       else{
         var parsedData = int.parse(data).toString();
-        logCon.insertLogLoaclAndApi('1',devName,parsedData,uuid,dev1mainUUID);
+        logCon.insertLogFBDev1(devName,parsedData,uuid,dev1mainUUID);
       }
       i++;
     });
@@ -349,57 +347,12 @@ class Device1Controller extends GetxController {
     }
   }
 
-  //Save Real Log to downloads folder for Device 1
-  Future<void> requestStoragePermissionAndExport(logList) async {
-    LogController logCon = Get.find();
-    final serviceStatus = await Permission.storage.isGranted;
-    // ignore: unrelated_type_equality_checks, unused_local_variable
-    bool isStorageOn = serviceStatus == ServiceStatus.enabled;
-    final status = await Permission.storage.request();
-    if (status == PermissionStatus.granted) {
-      Directory? directory = Directory('/storage/emulated/0/Download');
-      var date = DateTime.now();
-      String dateString = date.toString();
-      String removeDash = dateString.replaceAll("-","");
-      String removeColon = removeDash.replaceAll(":","");
-      String removeSpace = removeColon.replaceAll(" ","");
-      String finalDate = removeSpace.split(".")[0];
-      String fileName = homeCon.useridTextController.value.text.trim()+'_'+homeCon.deviceNameLeft.trim()+'_'+finalDate+".csv";
-      String filePath = '${directory.path}/$fileName';
-      File f = File(filePath);
-      if (kDebugMode) {
-        print(" FILE " + filePath);
-      }
-      // convert rows to String and write as csv file
-      String csv = const ListToCsvConverter().convert(logList);
-      await f.writeAsString(csv);
-      await logCon.uploadLogToFirebase(filePath,homeCon.useridTextController.value.text.trim()+'_'+homeCon.deviceNameLeft.trim()+'_'+finalDate+".csv",homeCon.companyId,homeCon.siteId);
-      logs1.clear();
-      toastMsgCon.showLogDownloadedMsg(fileName);
-      if (kDebugMode) {
-        print('Permission Granted');
-      }
-    } else if (status == PermissionStatus.denied) {
-      if (kDebugMode) {
-        print('Permission denied');
-      }
-      toastMsgCon.showPermissionDeniedMsg();
-    } else if (status == PermissionStatus.permanentlyDenied) {
-      await openAppSettings();
-      if (kDebugMode) {
-        print('Permission Permanently Denied');
-      }
-      toastMsgCon.showPermissionDeniedPermanentMsg();
-    }
-  }
-
   //Add Connected Device Log to FireBase Device Status Latest And Device Status History Collection and Local
   addDeviceConnectedLogFbAndLocal()async{
     // AudioController audioCon = Get.find();
     // audioCon.playConnectedAudio();
     HomeController homeCon = Get.find();
     homeCon.deviceLeftConnected = 'Connected';
-    logCon.insertDeviceLog(homeCon.deviceNameLeft,homeCon.deviceLeftConnected);
     toastMsgCon.showDeviceConnectedMsg(homeCon.deviceNameLeft);
     FirestoreServices.addDeviceStatusHistory(
       companyId: homeCon.companyId??0, 
@@ -458,7 +411,6 @@ class Device1Controller extends GetxController {
     homeCon.deviceLeftConnected = 'Disconnected';
     // device1Connected.value = false;
     deviceState1!.value= DeviceState.disconnected;
-    logCon.insertDeviceLog(homeCon.deviceNameLeft,'Disconnected');
     Vibration.vibrate();
     FirestoreServices.addDeviceStatusHistory(
       companyId: homeCon.companyId??0, 

@@ -12,7 +12,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_elves/flutter_blue_elves.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:flutter_logs/flutter_logs.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,10 +41,6 @@ class HomeController extends GetxController {
   final companyCode = TextEditingController();
   final averageMaxLengthTextController = TextEditingController(); //Average Max length (default 10)
   final alertTimerTextController = TextEditingController(); // Alert Timer
-
-  final apiEndPointUrl = TextEditingController();
-  final xApiKey = TextEditingController();
-  final intervalSecond = TextEditingController();
   
   final dev1ServiceUUID = TextEditingController();
   final dev1DetectValueUUID = TextEditingController();
@@ -115,13 +110,6 @@ class HomeController extends GetxController {
   // LOG SAVE Controller //
   Timer? scanTimerDev1;
   Timer? scanTimerDev2;
-
-  final myLogFileName = "MyLogFile";
-  // LOG Controller //
-  final _tag = "MyApp";
-  var toggle = false;
-  var logStatus = '';
-  static final Completer _completer = Completer<String>();
 
   @override
   void onInit() {
@@ -267,7 +255,6 @@ class HomeController extends GetxController {
     });
   }
 
-  //////////////////////////////
   // Conrols for Dropdown fields 
 
   resetSiteSelectionDD(){
@@ -296,16 +283,11 @@ class HomeController extends GetxController {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////
   //Settings Page Controls
 
   loadSettings() async {
     // LOAD STORED SETTING DATA //
     final prefs = await SharedPreferences.getInstance();
-    String? apiEndPointUrlP = prefs.getString('apiendpoint').toString();
-    String? xApiKeyP = prefs.getString('xapikey').toString();
-    int? intervalSecondP = prefs.getInt('intervalsecond');
-
     String? useridP = prefs.getString('userid').toString();
     String? companyCodeP = prefs.getString('companyCode').toString();
     int? averageMaxLengthP = prefs.getInt('averageMaxLength');
@@ -326,9 +308,6 @@ class HomeController extends GetxController {
     String? dev2TemperatureValueUUIDP = prefs.getString('dev2TemperatureValueUUID').toString();
 
     //SET LOADED DATA TO RESPECTIVE TEXTFIELD //
-    apiEndPointUrl.text = apiEndPointUrlP == "null" ? "" : apiEndPointUrlP;
-    xApiKey.text = xApiKeyP == "null" ? "" : xApiKeyP;
-    intervalSecond.text = intervalSecondP == null ? "1" : intervalSecondP.toString();
     userid.text = useridP == "" || useridP == "null" ? "" : useridP.toString().trim();
     companyCode.text = companyCodeP == "" || companyCodeP == "null" ? "" : companyCodeP.toString();
 
@@ -370,10 +349,6 @@ class HomeController extends GetxController {
   //Save to local storage/shared preference (Settings Page)
   saveSetings() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('apiendpoint', apiEndPointUrl.text.trim());
-    prefs.setString('xapikey', xApiKey.text);
-    prefs.setInt('intervalsecond', int.parse(intervalSecond.text.trim()));
-
     // prefs.setString('apiToggle', isSwitched.toString());
 
     prefs.setString('dev1ServiceUUID', dev1ServiceUUID.text.trim());
@@ -402,7 +377,6 @@ class HomeController extends GetxController {
     toastCon.showSaveSnackBar();
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////
   //Home Page Controls
 
   //Company Verify Dialog check
@@ -534,7 +508,6 @@ class HomeController extends GetxController {
             startScanDevice2(context);
           }
         );
-        exportFileLogs();
         formChecking.value = false;
         update();
       }
@@ -614,7 +587,6 @@ class HomeController extends GetxController {
       device1Con.disposeCrontrolDevice();
       logCon.stopAlert(companyId,groupId,siteId,userid.text);
       update();
-      logCon.insertDeviceLog(deviceNameLeft,deviceLeftConnected);
       FirestoreServices.addDeviceStatusHistory(
         companyId: companyId??0, 
         deviceNameLeft: deviceNameLeft, 
@@ -671,7 +643,6 @@ class HomeController extends GetxController {
       device2Con.disposeCrontrolDevice();
       logCon.stopAlert(companyId,groupId,siteId,userid.text);
       update();
-      logCon.insertDeviceLog(deviceNameRight,deviceRightConnected);
       FirestoreServices.addDeviceStatusHistory(
         companyId: companyId??0, 
         deviceNameLeft: deviceNameLeft, 
@@ -726,170 +697,6 @@ class HomeController extends GetxController {
     baseMasterValue = null;
     baseUserValue = null;
     update();
-    exportFileLogs();
     stopForegroundTask();
-    logCon.exportVoltageLog();
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //For  Flutter_log packgae
-  
-  void exportFileLogs() {
-    FlutterLogs.exportFileLogForName(logFileName: myLogFileName, decryptBeforeExporting: true);
-  }
-
-  void setUpLogs() async {
-    await FlutterLogs.initLogs(
-      logLevelsEnabled: [
-        LogLevel.INFO,
-        LogLevel.WARNING,
-        LogLevel.ERROR,
-        LogLevel.SEVERE
-      ],
-      timeStampFormat: TimeStampFormat.TIME_FORMAT_READABLE,
-      directoryStructure: DirectoryStructure.FOR_DATE,
-      logTypesEnabled: [myLogFileName],
-      logFileExtension: LogFileExtension.LOG,
-      logsWriteDirectoryName: "MyLogs",
-      logsExportDirectoryName: "MyLogs/Exported",
-      debugFileOperations: true,
-      isDebuggable: true
-    );
-    // [IMPORTANT] The first log line must never be called before 'FlutterLogs.initLogs'
-    FlutterLogs.logInfo(_tag, "setUpLogs", "setUpLogs: Setting up logs..");
-    // Logs Exported Callback
-    FlutterLogs.channel.setMethodCallHandler((call) async {
-      if (call.method == 'logsExported') {
-        // Contains file name of zip
-        FlutterLogs.logInfo( _tag, "setUpLogs", "logsExported: ${call.arguments.toString()}");
-        setLogsStatus(status: "logsExported: ${call.arguments.toString()}", append: true);
-        // Notify Future with value
-        _completer.complete(call.arguments.toString());
-      } else if (call.method == 'logsPrinted') {
-        FlutterLogs.logInfo(_tag, "setUpLogs", "logsPrinted: ${call.arguments.toString()}");
-        setLogsStatus(status: "logsPrinted: ${call.arguments.toString()}", append: true);
-      }
-    });
-  }
-
-  void doSetupForELKSchema() async {
-    await FlutterLogs.setMetaInfo(
-      appId: "flutter_logs_example",
-      appName: "Flutter Logs Demo",
-      appVersion: "1.0",
-      language: "en-US",
-      deviceId: "00012",
-      environmentId: "7865",
-      environmentName: "dev",
-      organizationId: "5767",
-      organizationUnitId: "5767",
-      userId: "883023-2832-2323",
-      userName: "umair13adil",
-      userEmail: "m.umair.adil@gmail.com",
-      deviceSerial: "YJBKKSNKDNK676",
-      deviceBrand: "LG",
-      deviceName: "LG-Y08",
-      deviceManufacturer: "LG",
-      deviceModel: "989892BBN",
-      deviceSdkInt: "26",
-      deviceBatteryPercent: "27",
-      latitude: "55.0",
-      longitude: "-76.0",
-      labels: "",
-    );
-  }
-
-  void doSetupForMQTT() async {
-    await FlutterLogs.initMQTT(
-        topic: "",
-        brokerUrl: "",
-        //Add URL without schema
-        certificate: "assets/m2mqtt_ca.crt",
-        port: "8883",
-        writeLogsToLocalStorage: true,
-        debug: true,
-        initialDelaySecondsForPublishing: 10
-    );
-  }
-
-  void logData({required bool isException}) {
-    var logMessage = 'This is a log message: ${DateTime.now().millisecondsSinceEpoch}';
-
-    if (!isException) {
-      FlutterLogs.logThis(
-          tag: _tag,
-          subTag: 'logData',
-          logMessage: logMessage,
-          level: LogLevel.INFO
-      );
-    } else {
-      try {
-        if (toggle) {
-          toggle = false;
-          var i = 100 ~/ 0;
-          if (kDebugMode) {
-            print("$i");
-          }
-        } else {
-          toggle = true;
-          dynamic i;
-          if (kDebugMode) {
-            print(i * 10);
-          }
-        }
-      } catch (e) {
-        if (e is Error) {
-          FlutterLogs.logThis(
-              tag: _tag,
-              subTag: 'Caught an error.',
-              logMessage: 'Caught an exception!',
-              error: e,
-              level: LogLevel.ERROR
-          );
-          logMessage = e.stackTrace.toString();
-        } else if (e is Exception) {
-          FlutterLogs.logThis(
-              tag: _tag,
-              subTag: 'Caught an exception.',
-              logMessage: 'Caught an exception!',
-              exception: e,
-              level: LogLevel.ERROR
-          );
-          logMessage = e.toString();
-        }
-      }
-    }
-    setLogsStatus(status: logMessage);
-  }
-
-  void logToFile() {
-    var logMessage = "This is a log message: ${DateTime.now().millisecondsSinceEpoch}, it will be saved to my log file named: '$myLogFileName'";
-    FlutterLogs.logToFile(
-        logFileName: myLogFileName,
-        overwrite: false,
-        //If set 'true' logger will append instead of overwriting
-        logMessage: logMessage,
-        appendTimeStamp: true
-    ); //Add time stamp at the end of log message
-    setLogsStatus(status: logMessage);
-  }
-
-  void printAllLogs() {
-    FlutterLogs.printLogs(exportType: ExportType.ALL, decryptBeforeExporting: true);
-    setLogsStatus(status: "All logs printed");
-  }
-
-  Future<String> exportAllLogs() async {
-    FlutterLogs.exportLogs(exportType: ExportType.ALL);
-    return _completer.future as FutureOr<String>;
-  }
-
-  void printFileLogs() {
-    FlutterLogs.printFileLogForName(logFileName: myLogFileName, decryptBeforeExporting: true);
-  }
-
-  void setLogsStatus({String status = '', bool append = false}) {
-    logStatus = status;
-    update();
   }
 }

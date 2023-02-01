@@ -59,33 +59,6 @@ class _AdminLogViewState extends State<AdminLogView> {
                       ),
                     ),
                   ),
-                  TextButton(
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 6.0, right: 6.0,top: 4.0,bottom: 4.0),
-                      child: Text(
-                        'Export Real Log',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500
-                        )
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      side: const BorderSide(color: primaryColor, width: 1),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(6),
-                        )
-                      ),
-                    ),
-                    onPressed: () async{
-                      logCon.exportVoltageLog();
-                    },
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(top:12.0,bottom: 12.0,right: 8.0),
                     child: RichText(

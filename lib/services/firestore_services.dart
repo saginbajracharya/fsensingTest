@@ -17,6 +17,10 @@ final CollectionReference historyCollection = firestore.collection(dbCollectionH
 final String dbCollectionLatest = constants.firebaseCollection['latest'];
 final CollectionReference latestCollection = firestore.collection(dbCollectionLatest);
 
+//Worker Status Latest2
+final String dbCollectionLatest2 = constants.firebaseCollection['latest2'];
+final CollectionReference latestCollection2 = firestore.collection(dbCollectionLatest2);
+
 //Device Status History
 final String dbCollectionDeviceStatusHistory = constants.firebaseCollection['deviceStatusHistory'];
 final CollectionReference deviceStatusCollectionHistory = firestore.collection(dbCollectionDeviceStatusHistory);
@@ -32,6 +36,7 @@ final CollectionReference masterWorkerCollection = firestore.collection(dbCollec
 //Alert Log
 final String dbCollectionAlertLog = constants.firebaseCollection['alertLog'];
 final CollectionReference alertLogCollection = firestore.collection(dbCollectionAlertLog);
+Map<String, dynamic> data = <String, dynamic>{};
 
 class FirestoreServices {
 
@@ -51,7 +56,7 @@ class FirestoreServices {
     required String deviceStatusRight,
   }){
     DocumentReference documentReferencer = deviceStatusCollectionHistory.doc();
-    Map<String, dynamic> data = <String, dynamic>{
+    data = <String, dynamic>{
       "company_id": companyId,
       "group_id": groupId,
       "site_id": siteId,
@@ -91,7 +96,7 @@ class FirestoreServices {
     required String deviceStatusRight,
   })  {
     DocumentReference documentReferencer = deviceStatusCollectionLatest.doc(workerCode);
-    Map<String, dynamic> data = <String, dynamic>{
+    data = <String, dynamic>{
       "company_id": companyId,
       "group_id": groupId,
       "site_id": siteId,
@@ -130,7 +135,7 @@ class FirestoreServices {
     required String deviceStatusRight,
   }){
     DocumentReference documentReferencer = deviceStatusCollectionLatest.doc(workerCode);
-    Map<String, dynamic> data = <String, dynamic>{
+    data = <String, dynamic>{
       "company_id": companyId,
       "group_id": groupId,
       "site_id": siteId,
@@ -192,7 +197,7 @@ class FirestoreServices {
     required dynamic heightAlertClass,
   }){
     DocumentReference documentReferencer = historyCollection.doc();
-    Map<String,dynamic> data = <String,dynamic>{
+    data = <String,dynamic>{
       "company_id": companyId,
       "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
       "deleted_at": '',
@@ -241,7 +246,7 @@ class FirestoreServices {
     });
   }
 
-  static updateWorkerStatusLatest({
+  static updateWorkerStatusLatestDev1({
     required String devNo,
     required int companyId,
     required int groupId,
@@ -275,80 +280,120 @@ class FirestoreServices {
     required bool alertFlg,
   }){
     DocumentReference documentReferencer = latestCollection.doc(workerCode);
-    Map<String, dynamic> data = <String, dynamic>{};
-    if(devNo=='1'){
-      data = <String, dynamic>{
-        "company_id": companyId,
-        // "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
-        // "deleted_at": DateTime.now(),
-        "group_id": groupId,
-        "left_battery_value": leftBatteryValue,
-        "left_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
-        "left_device_id": leftDeviceId,
-        "left_failure_value": leftFailureValue,
-        "left_useleft_status": useLeftStatus,
-        "pressure_value": pressureValue,
-        // "right_battery_value": rightBatteryValue,
-        // "right_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
-        "right_device_id": rightDeviceId,
-        // "right_failure_value": rightFailureValue,
-        // "right_useright_status": useRightStatus.toString(),
-        "site_id": siteId,
-        "temperature_value": temperatureValue,
-        "updated_at": DateTime.now().toUtc().millisecondsSinceEpoch,
-        "worker_code": workerCode,
-        "worker_id": workerId,
-        "worker_name": workerName,
-        "worker_profile_image_url": workerProfileImageUrl,
-        "worker_status": workerStatus,
-        "start_time" : startTime,
-        // "start_height_calculation":startHeightCalculation,
-        "master_pressure_value":masterPressureValue,
-        // "base_user_pressure_value":baseUserPressureValue,
-        // "base_master_pressure_value":baseMasterPressureValue,
-        "actual_height_m":actualHeightM,
-        "display_height_m":displayHeightM,
-        "height_alert_class":heightAlertClass,
-        "alert_flg":alertFlg,
-      };
-    }
-    else if(devNo=='2'){
-      data = <String, dynamic>{
-        "company_id": companyId,
-        // "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
-        // "deleted_at": DateTime.now(),
-        "group_id": groupId,
-        // "left_battery_value": leftBatteryValue,
-        // "left_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
-        "left_device_id": leftDeviceId,
-        // "left_failure_value": leftFailureValue,
-        // "left_useleft_status": useLeftStatus,
-        "pressure_value": pressureValue,
-        "right_battery_value": rightBatteryValue,
-        "right_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
-        "right_device_id": rightDeviceId,
-        "right_failure_value": rightFailureValue,
-        "right_useright_status": useRightStatus.toString(),
-        "site_id": siteId,
-        "temperature_value": temperatureValue,
-        "updated_at": DateTime.now().toUtc().millisecondsSinceEpoch,
-        "worker_code": workerCode,
-        "worker_id": workerId,
-        "worker_name": workerName,
-        "worker_profile_image_url": workerProfileImageUrl,
-        "worker_status": workerStatus,
-        "start_time" : startTime,
+    data = <String, dynamic>{
+      "company_id": companyId,
+      // "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+      // "deleted_at": DateTime.now(),
+      "group_id": groupId,
+      "left_battery_value": leftBatteryValue,
+      "left_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "left_device_id": leftDeviceId,
+      "left_failure_value": leftFailureValue,
+      "left_useleft_status": useLeftStatus,
+      "pressure_value": pressureValue,
+      // "right_battery_value": rightBatteryValue,
+      // "right_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "right_device_id": rightDeviceId,
+      // "right_failure_value": rightFailureValue,
+      // "right_useright_status": useRightStatus.toString(),
+      "site_id": siteId,
+      "temperature_value": temperatureValue,
+      "updated_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "worker_code": workerCode,
+      "worker_id": workerId,
+      "worker_name": workerName,
+      "worker_profile_image_url": workerProfileImageUrl,
+      "worker_status": workerStatus,
+      "start_time" : startTime,
+      // "start_height_calculation":startHeightCalculation,
+      "master_pressure_value":masterPressureValue,
+      // "base_user_pressure_value":baseUserPressureValue,
+      // "base_master_pressure_value":baseMasterPressureValue,
+      "actual_height_m":actualHeightM,
+      "display_height_m":displayHeightM,
+      "height_alert_class":heightAlertClass,
+      "alert_flg":alertFlg,
+    };
+    documentReferencer
+    .update(data)
+    .whenComplete(() {
+      if (kDebugMode) {
+        print('FB Insert Complete updateWorkerStatusLatest Local Time/NEPAL Time====>' +DateTime.now().toString());
+        print('FB Insert Complete updateWorkerStatusLatest JAPAN Time====>' +getCurrentTimeofJapan());
+      }
+    })
+    .catchError((e) {});
+  }
 
-        // "start_height_calculation":startHeightCalculation,
-        "master_pressure_value":masterPressureValue,
-        // "base_user_pressure_value":baseUserPressureValue,
-        // "base_master_pressure_value":baseMasterPressureValue,
-        "actual_height_m":actualHeightM,
-        "display_height_m":displayHeightM,
-        "height_alert_class":heightAlertClass,
-        "alert_flg":alertFlg,
-      };
-    }
+  static updateWorkerStatusLatestDev2({
+    required String devNo,
+    required int companyId,
+    required int groupId,
+    required int leftBatteryValue,
+    // required String leftTime,
+    required String leftDeviceId,
+    required String leftFailureValue,
+    required String useLeftStatus,
+    required String pressureValue,
+    required int rightBatteryValue,
+    // required String rightTime,
+    required String rightDeviceId,
+    required String rightFailureValue,
+    required String useRightStatus,
+    required int siteId,
+    required String temperatureValue,
+    required String workerCode,
+    required int workerId,
+    required String workerName,
+    required String workerProfileImageUrl,
+    required String workerStatus,
+    required int startTime,
+
+    // required bool startHeightCalculation,
+    required String masterPressureValue,
+    dynamic baseMasterPressureValue,
+    dynamic baseUserPressureValue,
+    required dynamic actualHeightM,
+    required dynamic displayHeightM,
+    required dynamic heightAlertClass,
+    required bool alertFlg,
+  }){
+    DocumentReference documentReferencer = latestCollection2.doc(workerCode);
+    data = <String, dynamic>{
+      "company_id": companyId,
+      // "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+      // "deleted_at": DateTime.now(),
+      "group_id": groupId,
+      // "left_battery_value": leftBatteryValue,
+      // "left_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "left_device_id": leftDeviceId,
+      // "left_failure_value": leftFailureValue,
+      // "left_useleft_status": useLeftStatus,
+      "pressure_value": pressureValue,
+      "right_battery_value": rightBatteryValue,
+      "right_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "right_device_id": rightDeviceId,
+      "right_failure_value": rightFailureValue,
+      "right_useright_status": useRightStatus.toString(),
+      "site_id": siteId,
+      "temperature_value": temperatureValue,
+      "updated_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "worker_code": workerCode,
+      "worker_id": workerId,
+      "worker_name": workerName,
+      "worker_profile_image_url": workerProfileImageUrl,
+      "worker_status": workerStatus,
+      "start_time" : startTime,
+
+      // "start_height_calculation":startHeightCalculation,
+      "master_pressure_value":masterPressureValue,
+      // "base_user_pressure_value":baseUserPressureValue,
+      // "base_master_pressure_value":baseMasterPressureValue,
+      "actual_height_m":actualHeightM,
+      "display_height_m":displayHeightM,
+      "height_alert_class":heightAlertClass,
+      "alert_flg":alertFlg,
+    };
     documentReferencer
     .update(data)
     .whenComplete(() {
@@ -393,7 +438,7 @@ class FirestoreServices {
     required bool alertFlg,
   }){
     DocumentReference documentReferencer = latestCollection.doc(workerCode);
-    Map<String, dynamic> data = <String, dynamic>{
+    data = <String, dynamic>{
       "company_id": companyId,
       "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
       "deleted_at": '',
@@ -418,7 +463,6 @@ class FirestoreServices {
       "worker_profile_image_url": workerProfileImageUrl,
       "worker_status": workerStatus,
       "start_time" : startTime, 
-
       "start_height_calculation":startHeightCalculation,
       "master_pressure_value":masterPressureValue,
       "base_user_pressure_value":null,
@@ -426,7 +470,86 @@ class FirestoreServices {
       "actual_height_m":actualHeightM,
       "display_height_m":displayHeightM,
       "height_alert_class":heightAlertClass,
+      "alert_flg":alertFlg,
+    };
+    documentReferencer
+    .set(data)
+    .whenComplete(() {
+      // final prefs = await SharedPreferences.getInstance();
+      // prefs.setString('latestDocId', documentReferencer.id);
+      if (kDebugMode) {
+        print('FB Insert Complete MasterWorkerLatest Local Time/NEPAL Time====>' +DateTime.now().toString());
+        print('FB Insert Complete MasterWorkerLatest JAPAN Time====>' +getCurrentTimeofJapan());
+      }
+    })
+    .catchError((e) {});
+  }
 
+  static addWorkerStatusLatestDev2({
+    required int companyId,
+    required int groupId,
+    required int leftBatteryValue,
+    required String leftTime,
+    required String leftDeviceId,
+    required String leftFailureValue,
+    required String useLeftStatus,
+    required String pressureValue,
+    required int rightBatteryValue,
+    required String rightTime,
+    required String rightDeviceId,
+    required String rightFailureValue,
+    required String useRightStatus,
+    required int siteId,
+    required String temperatureValue,
+    required String workerCode,
+    required int workerId,
+    required String workerName,
+    required String workerProfileImageUrl,
+    required String workerStatus,
+    required int startTime,
+
+    required bool startHeightCalculation,
+    required String masterPressureValue,
+    required dynamic baseMasterPressureValue,
+    required dynamic baseUserPressureValue,
+    required dynamic actualHeightM,
+    required dynamic displayHeightM,
+    required dynamic heightAlertClass,
+    required bool alertFlg,
+  }){
+    DocumentReference documentReferencer = latestCollection2.doc(workerCode);
+    data = <String, dynamic>{
+      "company_id": companyId,
+      "created_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "deleted_at": '',
+      "group_id": groupId,
+      "left_battery_value": leftBatteryValue,
+      "left_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "left_device_id": leftDeviceId,
+      "left_failure_value": leftFailureValue,
+      "left_useleft_status": useLeftStatus,
+      "pressure_value": pressureValue,
+      "right_battery_value": rightBatteryValue,
+      "right_datetime": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "right_device_id": rightDeviceId,
+      "right_failure_value": rightFailureValue,
+      "right_useright_status": useRightStatus,
+      "site_id": siteId,
+      "temperature_value": temperatureValue,
+      "updated_at": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "worker_code": workerCode,
+      "worker_id": workerId,
+      "worker_name": workerName,
+      "worker_profile_image_url": workerProfileImageUrl,
+      "worker_status": workerStatus,
+      "start_time" : startTime, 
+      "start_height_calculation":startHeightCalculation,
+      "master_pressure_value":masterPressureValue,
+      "base_user_pressure_value":null,
+      "base_master_pressure_value":null,
+      "actual_height_m":actualHeightM,
+      "display_height_m":displayHeightM,
+      "height_alert_class":heightAlertClass,
       "alert_flg":alertFlg,
     };
     documentReferencer
@@ -459,7 +582,7 @@ class FirestoreServices {
     required String averagePressureValue,
   }){
     DocumentReference documentReferencer = masterWorkerCollection.doc('$companyId-$groupId-$siteId');
-    Map<String, dynamic> data = <String, dynamic>{
+    data = <String, dynamic>{
       "id":workerId,
       "company_id": companyId,
       "group_id": groupId,
@@ -495,7 +618,7 @@ class FirestoreServices {
     required String averagePressureValue,
   }){
     DocumentReference documentReferencer = masterWorkerCollection.doc('$companyId-$groupId-$siteId');
-    Map<String, dynamic> data = <String, dynamic>{
+    data = <String, dynamic>{
       "id":workerId,
       "company_id": companyId,
       "group_id": groupId,
@@ -592,7 +715,7 @@ class FirestoreServices {
     required String workerName
   }){
     DocumentReference documentReferencer = alertLogCollection.doc('$companyId-$groupId-$siteId').collection(todayDate).doc();
-    Map<String, dynamic> data = <String, dynamic>{
+    data = <String, dynamic>{
       "alert_date" : alertDate,
       "alert_time" : alertTime,
       "alert_type" : alertType,
@@ -620,7 +743,6 @@ class FirestoreServices {
     required bool alertFlg,
   }){
     DocumentReference documentReferencer = latestCollection.doc(workerCode);
-    Map<String, dynamic> data = <String, dynamic>{};
     data = <String, dynamic>{
       "alert_flg":alertFlg,
     };
@@ -635,6 +757,7 @@ class FirestoreServices {
     .catchError((e) {});
   }
 
+  ////////////////////////////////////////////
   //Transaction Test
   //Write updateWorkerStatusLatest
   static updateWorkerStatusLatestTransaction(
@@ -668,7 +791,7 @@ class FirestoreServices {
   ){
     final docRef = firestore.collection(dbCollectionHistory).doc(workerCode);
     firestore.runTransaction((transaction) async {
-      Map<String, dynamic> data = <String, dynamic>{};
+      data = <String, dynamic>{};
       if(devNo=='1'){
         data = <String, dynamic>{
           "company_id": companyId,

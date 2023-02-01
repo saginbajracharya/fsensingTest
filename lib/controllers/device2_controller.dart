@@ -9,12 +9,10 @@ import 'package:blue/model/connected_item.dart';
 import 'package:blue/model/log_item.dart';
 import 'package:blue/model/service_list_item.dart';
 import 'package:blue/services/firestore_services.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_elves/flutter_blue_elves.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 
@@ -337,50 +335,6 @@ class Device2Controller extends GetxController {
     });
   }
 
-  //Save Real Log to downloads folder for Device 2
-  Future<void> requestStoragePermissionAndExport(logList,context) async {
-    LogController logCon = Get.find();
-    final serviceStatus = await Permission.storage.isGranted;
-    // ignore: unrelated_type_equality_checks, unused_local_variable
-    bool isStorageOn = serviceStatus == ServiceStatus.enabled;
-    final status = await Permission.storage.request();
-    if (status == PermissionStatus.granted) {
-      Directory? directory = Directory('/storage/emulated/0/Download');
-      var date = DateTime.now();
-      String dateString = date.toString();
-      String removeDash = dateString.replaceAll("-","");
-      String removeColon = removeDash.replaceAll(":","");
-      String removeSpace = removeColon.replaceAll(" ","");
-      String finalDate = removeSpace.split(".")[0];
-      String fileName = homeCon.useridTextController.value.text.trim()+'_'+homeCon.deviceNameRight.trim()+'_'+finalDate+".csv";
-      String filePath = '${directory.path}/$fileName';
-      if (kDebugMode) {
-        print(" FILE " + filePath);
-      }
-      File f = File(filePath);
-      // convert rows to String and write as csv file
-      String csv = const ListToCsvConverter().convert(logList);
-      await f.writeAsString(csv);
-      await logCon.uploadLogToFirebase(filePath,fileName,homeCon.companyId,homeCon.siteId);
-      logs2.clear();
-      toastMsgCon.showLogDownloadedMsg(fileName);
-      if (kDebugMode) {
-        print('Permission Granted');
-      }
-    } else if (status == PermissionStatus.denied) {
-      if (kDebugMode) {
-        print('Permission denied');
-      }
-      toastMsgCon.showPermissionDeniedMsg();
-    } else if (status == PermissionStatus.permanentlyDenied) {
-      await openAppSettings();
-      if (kDebugMode) {
-        print('Permission Permanently Denied');
-      }
-      toastMsgCon.showPermissionDeniedPermanentMsg();
-    }
-  }
-
   //Save device 2 logs with devName,dev1mainUUID ,uuid and data params then to insertLogLoaclAndApi in log Controller where logs are separated as per service uuid to know which data base to save.
   saveLogs(devName,dev2mainUUID,uuid,data) async {
     final prefs = await SharedPreferences.getInstance();
@@ -388,11 +342,11 @@ class Device2Controller extends GetxController {
     //uuid from device == settings device 1 real value uuid then dont parse
     Future.delayed(Duration(seconds: i==0?2:0), () {
       if(uuid==dev2RealValueUUID){
-        logCon.insertLogLoaclAndApi('2',devName,data,uuid,dev2mainUUID);
+        logCon.insertLogFBDev2(devName,data,uuid,dev2mainUUID);
       }
       else{
         var parsedData = int.parse(data).toString();
-        logCon.insertLogLoaclAndApi('2',devName,parsedData,uuid,dev2mainUUID);
+        logCon.insertLogFBDev2(devName,parsedData,uuid,dev2mainUUID);
       }
       i++;
     });
@@ -423,7 +377,6 @@ class Device2Controller extends GetxController {
   addDeviceConnectedLogFbAndLocal()async{
     HomeController homeCon = Get.find();
     homeCon.deviceRightConnected = 'Connected';
-    logCon.insertDeviceLog(homeCon.deviceNameRight,homeCon.deviceRightConnected);
     toastMsgCon.showDeviceConnectedMsg(homeCon.deviceNameRight);
     FirestoreServices.addDeviceStatusHistory(
       companyId: homeCon.companyId??0, 
@@ -478,7 +431,6 @@ class Device2Controller extends GetxController {
     HomeController homeCon = Get.find();
     toastMsgCon.deviceDisconnectedMsg('R');
     homeCon.deviceRightConnected = 'Disconnected';
-    logCon.insertDeviceLog(homeCon.deviceNameRight,'Disconnected');
     Vibration.vibrate();
     FirestoreServices.addDeviceStatusHistory(
       companyId: homeCon.companyId??0, 

@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:blue/common/style.dart';
-import 'package:blue/controllers/audio_controller.dart';
 import 'package:blue/controllers/device1_controller.dart';
 import 'package:blue/controllers/device2_controller.dart';
 import 'package:blue/controllers/home_controller.dart';
@@ -13,11 +11,8 @@ import 'package:blue/model/master_worker_model.dart';
 import 'package:blue/model/sites.dart';
 import 'package:blue/model/worker_model.dart';
 import 'package:blue/services/firestore_services.dart';
-import 'package:blue/view/battery_value_log.dart';
 import 'package:blue/view/device1_connect.dart';
 import 'package:blue/view/device2_connect.dart';
-import 'package:blue/view/data_log_page.dart';
-import 'package:blue/view/device_status_log.dart';
 import 'package:blue/view/settings_page.dart';
 import 'package:blue/widgets/admin_log_view.dart';
 import 'package:blue/widgets/company_verify_dialog.dart';
@@ -42,7 +37,6 @@ class _HomePageState extends State<HomePage> {
   final Device1Controller device1Con = Get.put(Device1Controller());
   final Device2Controller device2Con = Get.put(Device2Controller());
   final LogController logCon = Get.put(LogController());
-  final AudioController audioCon = Get.put(AudioController());
   final ToastMessageController toastCon = Get.put(ToastMessageController());
   //Storage Instance
   final prefs = SharedPreferences.getInstance();
@@ -53,13 +47,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // Initiallize Database
     dbHelper.initializeDB();
-    homeCon.setUpLogs();
     super.initState();
   }
 
   @override
   void dispose() {
-    AudioPlayer().dispose();
     super.dispose();
   }
 
@@ -91,52 +83,7 @@ class _HomePageState extends State<HomePage> {
             },
           )
           :null,
-          actions: <Widget>[
-            //Battery Log
-            homeCon.visible
-            ?IconButton(
-              constraints: const BoxConstraints(),
-              padding: const EdgeInsets.only(left:0,right:0),
-              icon: const Icon(Icons.battery_charging_full),
-              color: black,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BatteryValueLog()),
-                );
-              },
-            )
-            :const SizedBox(),
-            //Device Log
-            homeCon.visible
-            ?IconButton(
-              constraints: const BoxConstraints(),
-              padding: const EdgeInsets.only(left:6,right:6),
-              icon: const Icon(Icons.mobile_friendly),
-              color: black,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DeviceStatusLog()),
-                );
-              },
-            )
-            :const SizedBox(),
-            //Detect Log
-            homeCon.visible
-            ?IconButton(
-              constraints: const BoxConstraints(),
-              padding: const EdgeInsets.only(left:4,right:6),
-              icon: const Icon(Icons.document_scanner_outlined),
-              color: black,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DataLogPage()),
-                );
-              },
-            )
-            :const SizedBox(),
+          actions: const <Widget>[
           ],
           title: InkWell(
             onTap: (){
